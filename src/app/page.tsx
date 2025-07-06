@@ -25,6 +25,7 @@ export default async function Home() {
       author: true,
     },
   });
+  
 
   return (
     <div className="flex justify-between items-center">
