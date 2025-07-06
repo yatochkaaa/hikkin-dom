@@ -11,6 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import HomePost from "@/components/home/post";
+import { TypographyH1, TypographyList } from "@/components/ui/typography";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Home() {
   const users = await prisma.user.findMany();
@@ -27,20 +29,20 @@ export default async function Home() {
   return (
     <div className="flex justify-between items-center">
       <section className="flex flex-col">
-        <h1 className="text-4xl font-bold mb-8">Superblog</h1>
-        <ol className="list-decimal list-inside">
+        <TypographyH1 className="mb-6">Superblog</TypographyH1>
+        <TypographyList className="list-decimal list-inside">
           {users.map((user) => (
             <li key={user.id} className="mb-2">
               {user.name}
             </li>
           ))}
-        </ol>
+        </TypographyList>
       </section>
 
       <Card className="max-w-[320px] min-h-[400px] w-full">
         <CardHeader>
-          <CardTitle>Last 5 posts</CardTitle>
-          <CardDescription>Community news</CardDescription>
+          <CardTitle>Community news</CardTitle>
+          <CardDescription>Last posts</CardDescription>
           <CardAction>
             <Link href="/posts/new">
               <Button className="p-0 cursor-pointer" variant="link">
@@ -50,11 +52,14 @@ export default async function Home() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <ul className="flex flex-col gap-4">
+          <TypographyList className="m-0">
             {posts.map((post) => (
-              <HomePost key={post.id} post={post} />
+              <div key={post.id}>
+                <HomePost post={post} />
+                <Separator className="my-2" />
+              </div>
             ))}
-          </ul>
+          </TypographyList>
         </CardContent>
         <CardFooter className="mt-auto">
           <CardAction>
