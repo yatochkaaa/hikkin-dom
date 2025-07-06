@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 import prisma from "@/lib/prisma";
 
 export default async function Posts() {
@@ -14,11 +16,16 @@ export default async function Posts() {
       </h1>
       <ul className="font-[family-name:var(--font-geist-sans)] max-w-2xl space-y-4">
         {posts.map((post) => (
-          <li key={post.id}>
+          <li key={post.id} className="flex items-center gap-2">
             <span className="font-semibold">{post.title}</span>
-            <span className="text-sm text-gray-600 ml-2">
-              by {post.author.name}
-            </span>
+            <span className="text-sm text-gray-600">by {post.author.name}</span>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="size-8"
+            >
+              <Trash />
+            </Button>
           </li>
         ))}
       </ul>
