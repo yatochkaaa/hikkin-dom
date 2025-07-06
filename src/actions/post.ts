@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { PostEditableData } from "@/types/post";
+import { getCurrentUser } from "@/actions/user";
 
 export async function getPost(postId: number) {
   const post = await prisma.post.findUnique({
@@ -14,6 +15,31 @@ export async function getPost(postId: number) {
   });
 
   return post;
+}
+
+export async function createPost(formData: FormData) {
+  const user = await getCurrentUser();
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+
+  if (!user?.id) {
+    throw new Error("User is not registered.");
+  }
+
+  if (!title || title.trim().length === 0) {
+    throw new Error("Title is required.");
+  }
+
+  await prisma.post.create({
+    data: {
+      title,
+      content,
+      authorId: user.id,
+    },
+  });
+
+  revalidatePath("/");
+  redirect("/");
 }
 
 export async function updatePost(formData: FormData) {
