@@ -1,8 +1,8 @@
 import { ThemeProvider } from "next-themes";
+import { Header } from "@/components/layout/header";
 import "./globals.css";
-import { ModeToggle } from "@/components/ui/modeToggle";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -16,13 +16,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <header className="w-full py-6">
-            <div className="mx-auto max-w-[1920px] px-20">
-              <div className="ml-auto w-fit">
-                <ModeToggle />
-              </div>
-            </div>
-          </header>
+          <Header />
           <main className="mx-auto max-w-[1920px] px-20">{children}</main>
         </ThemeProvider>
       </body>

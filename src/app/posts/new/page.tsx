@@ -11,7 +11,6 @@ import { TypographyH1 } from "@/components/ui/typography";
 export default function NewPost() {
   async function createPost(formData: FormData) {
     "use server";
-
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
 
@@ -23,7 +22,13 @@ export default function NewPost() {
       data: {
         title,
         content,
-        authorId: 1,
+        authorId: "cmcs4tnkg00008w0vyw41yl27",
+      },
+    });
+
+    await prisma.user.deleteMany({
+      where: {
+        email: { in: ["test@example.com", "alice@prisma.io", "bob@prisma.io"] },
       },
     });
 
