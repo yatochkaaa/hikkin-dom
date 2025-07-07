@@ -57,34 +57,36 @@ export default async function Profile() {
 
       <Separator />
 
-      <div className="space-y-4">
-        {posts.map((post) => (
-          <Card key={post.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-lg font-medium">
-                {post.title}
-              </CardTitle>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <CalendarDays className="h-4 w-4" />
-                <span>
-                  {/* Предполагаем наличие post.createdAt */}
-                  {new Date(post.createdAt ?? Date.now()).toLocaleDateString(
-                    "ru-RU",
-                    {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    }
-                  )}
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground leading-relaxed">
-              {post.content}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {posts.length === 0 ? (
+        <p className="text-muted-foreground text-sm">У вас пока нет постов.</p>
+      ) : (
+        <div className="space-y-4">
+          {posts.map((post) => (
+            <Link key={post.id} href={`/posts/${post.id}`} className="block">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium">
+                    {post.title}
+                  </CardTitle>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                    <CalendarDays className="h-4 w-4" />
+                    <span>
+                      {new Date(post.createdAt).toLocaleDateString("ru-RU", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground leading-relaxed">
+                  {post.content}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -23,8 +23,27 @@ export default async function ProfileEdit() {
             Name
           </Label>
 
-          <Input type="text" id="name" name="name" defaultValue={user.name || ""} />
-        </div>  
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            defaultValue={user.name || ""}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="image" className="text-lg mb-2">
+            Photo URL
+          </Label>
+
+          <Input
+            type="text"
+            id="image"
+            name="image"
+            defaultValue={user.image || ""}
+          />
+        </div>
+
         <Button type="submit" className="w-full cursor-pointer">
           Save
         </Button>

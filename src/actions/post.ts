@@ -28,6 +28,9 @@ export async function getUserPosts() {
     where: {
       authorId: user.id,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return posts;

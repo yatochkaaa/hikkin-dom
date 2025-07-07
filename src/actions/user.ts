@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { validateImageUrl, validateUsername } from "@/lib/validators";
 
 export async function getCurrentUser() {
   const session = await auth();
@@ -25,22 +26,25 @@ export async function updateCurrentUser(formData: FormData) {
   }
 
   const data = {
-    name: formData.get("name") as string,
+    name: (formData.get("name") as string).trim(),
+    image: (formData.get("image") as string).trim(),
   };
 
-  if (
-    !data.name ||
-    data.name.trim().length < 4 ||
-    data.name.trim().length > 24
-  ) {
-    throw new Error("Name must be between 4 and 24 characters long");
+  if (data.name === user.name && data.image === user.image) {
+    return redirect("/profile");
   }
+
+  const usernameError = validateUsername(data.name);
+  if (usernameError) throw new Error(usernameError);
+
+  const imageError = validateImageUrl(data.image);
+  if (imageError) throw new Error(imageError);
 
   await prisma.user.update({
     where: { email: user.email },
     data,
   });
 
-  revalidatePath('/profile')
+  revalidatePath("/profile");
   redirect("/profile");
 }
