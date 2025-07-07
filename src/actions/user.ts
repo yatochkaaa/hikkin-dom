@@ -9,9 +9,7 @@ import { validateImageUrl, validateUsername } from "@/lib/validators";
 export async function getCurrentUser() {
   const session = await auth();
 
-  if (!session?.user?.email) {
-    throw new Error("User is not registered.");
-  }
+  if (!session?.user?.email) return;
 
   return prisma.user.findUnique({
     where: { email: session.user.email },

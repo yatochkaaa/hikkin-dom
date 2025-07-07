@@ -65,7 +65,7 @@ export default async function Profile() {
             <Link key={post.id} href={`/posts/${post.id}`} className="block">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium">
+                  <CardTitle className="text-lg font-medium wrap-anywhere">
                     {post.title}
                   </CardTitle>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
@@ -79,7 +79,7 @@ export default async function Profile() {
                     </span>
                   </div>
                 </CardHeader>
-                <CardContent className="text-sm text-muted-foreground leading-relaxed">
+                <CardContent className="text-sm text-muted-foreground leading-relaxed wrap-anywhere">
                   {post.content}
                 </CardContent>
               </Card>
