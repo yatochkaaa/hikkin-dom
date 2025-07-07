@@ -5,8 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TypographyH1 } from "@/components/ui/typography";
 import { createPost } from "@/actions/post";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
-export default function NewPost() {
+export default async function NewPost() {
+  const session = await auth();
+
+  if (!session) {
+    redirect("/");
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <TypographyH1 className="mb-6">Create New Post</TypographyH1>

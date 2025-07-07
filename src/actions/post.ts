@@ -17,12 +17,28 @@ export async function getPost(postId: number) {
   return post;
 }
 
+export async function getUserPosts() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    throw new Error("User is not registered.");
+  }
+
+  const posts = await prisma.post.findMany({
+    where: {
+      authorId: user.id,
+    },
+  });
+
+  return posts;
+}
+
 export async function createPost(formData: FormData) {
   const user = await getCurrentUser();
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
 
-  if (!user?.id) {
+  if (!user) {
     throw new Error("User is not registered.");
   }
 
