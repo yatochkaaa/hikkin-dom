@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import Link from "next/link";
 import {
   Card,
   CardAction,
@@ -9,28 +9,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import HomePost from "@/components/home/post";
 import { TypographyH1, TypographyList } from "@/components/ui/typography";
 import { Separator } from "@/components/ui/separator";
+import { getUsers } from "@/actions/user";
+import { getPosts } from "@/actions/post";
 
 export default async function Home() {
-  const users = await prisma.user.findMany();
-  const posts = await prisma.post.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
-    include: {
-      author: true,
-    },
-  });
-  
+  const users = await getUsers();
+  const posts = await getPosts({ take: 5 });
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between">
       <section className="flex flex-col">
-        <TypographyH1 className="mb-6">Superblog</TypographyH1>
+        <TypographyH1 className="mb-6">Users:</TypographyH1>
         <TypographyList className="list-decimal list-inside">
           {users.map((user) => (
             <li key={user.id} className="mb-2">

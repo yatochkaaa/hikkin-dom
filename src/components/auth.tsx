@@ -16,16 +16,18 @@ function SignIn() {
   );
 }
 
-function SignOut() {
+function SignOut({ className, ...props }: React.ComponentProps<"form">) {
   return (
     <form
       action={async () => {
         "use server";
         await signOut();
       }}
+      className={className}
+      {...props}
     >
-      <Button variant="outline" type="submit" className="cursor-pointer">
-        Sign Out
+      <Button variant="outline" type="submit" className="w-full cursor-pointer">
+        Log out
       </Button>
     </form>
   );

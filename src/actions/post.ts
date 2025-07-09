@@ -3,8 +3,25 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { PostEditableData } from "@/types/post";
+import { PostWithAuthor } from "@/types/post";
 import { getCurrentUser } from "@/actions/user";
+import { Prisma } from "@prisma/client";
+
+export async function getPosts(
+  options: Omit<Prisma.PostFindManyArgs, "include"> = {}
+): Promise<PostWithAuthor[]> {
+  const posts = await prisma.post.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: true,
+    },
+    ...options,
+  });
+
+  return posts as PostWithAuthor[];
+}
 
 export async function getPost(postId: number) {
   const post = await prisma.post.findUnique({
@@ -63,7 +80,7 @@ export async function createPost(formData: FormData) {
 
 export async function updatePost(formData: FormData) {
   const postId = Number(formData.get("id"));
-  const data: PostEditableData = {
+  const data = {
     title: formData.get("title") as string,
     content: formData.get("content") as string,
   };
