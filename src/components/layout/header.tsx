@@ -4,6 +4,7 @@ import { SignIn, SignOut } from "@/components/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCurrentUser } from "@/actions/user";
 import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +21,6 @@ async function Header() {
   return (
     <header className="w-full py-8">
       <div className="flex justify-between align-center mx-auto max-w-[1920px] px-20">
-        <ModeToggle />
-
         <nav>
           <Link href="/">
             <Button variant="link" className="text-lg cursor-pointer">
@@ -49,9 +48,15 @@ async function Header() {
                 <DropdownMenuGroup>
                   <Link href="/profile">
                     <DropdownMenuItem className="cursor-pointer">
-                      Profile
+                      <User />
+                      <span>Profile</span>
                     </DropdownMenuItem>
                   </Link>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>System Settings</DropdownMenuLabel>
+                  <DropdownMenuItem className="p-0">
+                    <ModeToggle />
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="p-0 mt-2 mb-1">
                     <SignOut className="w-full" />

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Edit } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getUserPosts } from "@/actions/post";
 import { getCurrentUser } from "@/actions/user";
@@ -9,9 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { CalendarDays, Edit } from "lucide-react";
-import Link from "next/link";
+import { Post } from "@/components/shared/post";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function Profile() {
   const user = await getCurrentUser();
@@ -46,47 +47,39 @@ export default async function Profile() {
             </Link>
           </CardAction>
         </CardHeader>
+
+        <CardContent>
+          <div className="flex items-center gap-1">
+            <span className="text-xl">{posts.length}</span>
+            <span className="text-sm text-gray-400">Posts</span>
+          </div>
+        </CardContent>
       </Card>
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold tracking-tight">📝 Мои посты</h2>
-        <span className="text-sm text-muted-foreground">
-          Всего: {posts.length}
-        </span>
-      </div>
+      <Tabs defaultValue="posts" className="flex flex-col gap-8">
+        <TabsList className="px-0">
+          <TabsTrigger
+            value="posts"
+            className="px-8 py-4 font-semibold text-lg cursor-pointer"
+          >
+            Posts
+          </TabsTrigger>
+        </TabsList>
 
-      <Separator />
-
-      {posts.length === 0 ? (
-        <p className="text-muted-foreground text-sm">У вас пока нет постов.</p>
-      ) : (
-        <div className="space-y-4">
-          {posts.map((post) => (
-            <Link key={post.id} href={`/posts/${post.id}`} className="block">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-medium wrap-anywhere">
-                    {post.title}
-                  </CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                    <CalendarDays className="h-4 w-4" />
-                    <span>
-                      {new Date(post.createdAt).toLocaleDateString("ru-RU", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground leading-relaxed wrap-anywhere">
-                  {post.content}
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      )}
+        <TabsContent value="posts" className="flex flex-col gap-2">
+          {posts.length === 0 ? (
+            <p className="text-muted-foreground text-sm">
+              У вас пока нет постов.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {posts.map((post) => (
+                <Post key={post.id} post={post} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
