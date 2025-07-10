@@ -101,6 +101,7 @@ export async function updatePost(formData: FormData) {
 
 export async function deletePost(formData: FormData) {
   const postId = Number(formData.get("id"));
+  const redirectTo = formData.get("redirect_to") as string;
 
   await prisma.post.delete({
     where: {
@@ -108,6 +109,8 @@ export async function deletePost(formData: FormData) {
     },
   });
 
-  revalidatePath("/");
-  redirect("/");
+  if (redirectTo) {
+    revalidatePath(redirectTo);
+    redirect(redirectTo);
+  }
 }

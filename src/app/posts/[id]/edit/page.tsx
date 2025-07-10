@@ -62,15 +62,15 @@ export default async function PostEdit({
       <Separator />
 
       <div className="flex gap-2">
-        <Button type="submit" className="cursor-pointer">
-          Save
-        </Button>
-
         <Link href={`/posts/${post.id}`}>
           <Button type="button" variant="secondary" className="cursor-pointer">
             Cancel
           </Button>
         </Link>
+
+        <Button type="submit" className="cursor-pointer">
+          Save
+        </Button>
       </div>
     </Form>
   );
