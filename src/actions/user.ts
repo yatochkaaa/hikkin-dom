@@ -5,6 +5,15 @@ import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { validateImageUrl, validateUsername } from "@/lib/validators";
+import { Prisma } from "@prisma/client";
+
+export async function getUsers(options: Prisma.UserFindManyArgs = {}) {
+  const users = await prisma.user.findMany({
+    ...options,
+  });
+
+  return users;
+}
 
 export async function getCurrentUser() {
   const session = await auth();

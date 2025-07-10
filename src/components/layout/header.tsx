@@ -4,7 +4,16 @@ import { SignIn, SignOut } from "@/components/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCurrentUser } from "@/actions/user";
 import { Button } from "@/components/ui/button";
-import { TypographyP } from "@/components/ui/typography";
+import { User } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 async function Header() {
   const user = await getCurrentUser();
@@ -12,8 +21,6 @@ async function Header() {
   return (
     <header className="w-full py-8">
       <div className="flex justify-between align-center mx-auto max-w-[1920px] px-20">
-        <ModeToggle />
-
         <nav>
           <Link href="/">
             <Button variant="link" className="text-lg cursor-pointer">
@@ -26,25 +33,37 @@ async function Header() {
           {!user ? (
             <SignIn />
           ) : (
-            <div className="flex items-center gap-8">
-              <Link href="/profile">
-                <Button
-                  variant="link"
-                  className="cursor-pointer flex items-center gap-4 p-0"
-                >
-                  <TypographyP className="font-semibold text-base">
-                    {user.name}
-                  </TypographyP>
-                  <Avatar>
-                    <AvatarImage src={user.image || ""} alt="avatar" />
-                    <AvatarFallback>
-                      {user.name?.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </Link>
-              <SignOut />
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="h-10 w-10 cursor-pointer">
+                  <AvatarImage src={user.image || ""} alt="avatar" />
+                  <AvatarFallback delayMs={600}>
+                    {user?.name?.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent className="w-fit" align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuGroup>
+                  <Link href="/profile">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <User />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>System Settings</DropdownMenuLabel>
+                  <DropdownMenuItem className="p-0">
+                    <ModeToggle />
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="p-0 mt-2 mb-1">
+                    <SignOut className="w-full" />
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
