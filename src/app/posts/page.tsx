@@ -1,8 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getPosts } from "@/actions/post";
 import { Post } from "@/components/shared/post";
+import { getCurrentUser } from "@/actions/user";
 
 export default async function Posts() {
+  const user = await getCurrentUser();
   const posts = await getPosts({ take: 15 });
 
   return (
@@ -19,7 +21,12 @@ export default async function Posts() {
 
         <TabsContent value="posts" className="flex flex-col gap-2">
           {posts.map((post) => (
-            <Post key={post.id} post={post} />
+            <Post
+              key={post.id}
+              post={post}
+              currentUserId={user?.id}
+              redirectTo="/posts"
+            />
           ))}
         </TabsContent>
       </Tabs>

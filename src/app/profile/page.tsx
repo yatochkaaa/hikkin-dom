@@ -72,9 +72,14 @@ export default async function Profile() {
               У вас пока нет постов.
             </p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {posts.map((post) => (
-                <Post key={post.id} post={post} />
+                <Post
+                  key={post.id}
+                  post={post}
+                  currentUserId={user.id}
+                  redirectTo="/profile"
+                />
               ))}
             </div>
           )}
