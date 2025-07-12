@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getPosts } from "@/actions/post";
-import { Post } from "@/components/shared/post";
+import { Post } from "@/components/custom/post";
 import { getCurrentUser } from "@/actions/user";
 
 export default async function Posts() {

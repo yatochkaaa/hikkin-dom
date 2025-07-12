@@ -2,115 +2,101 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
-import { PostWithAuthor } from "@/types/post";
 import { getCurrentUser } from "@/actions/user";
-import { Prisma } from "@prisma/client";
+import { PostService } from "@/services/post.service";
+import { createPostSchema, updatePostSchema } from "@/lib/validations";
 
-export async function getPosts(
-  options: Omit<Prisma.PostFindManyArgs, "include"> = {}
-): Promise<PostWithAuthor[]> {
-  const posts = await prisma.post.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      author: true,
-    },
-    ...options,
-  });
-
-  return posts as PostWithAuthor[];
+export async function getPost(id: number) {
+  return await PostService.getPostById(id);
 }
 
-export async function getPost(postId: number) {
-  const post = await prisma.post.findUnique({
-    where: { id: postId },
-    include: {
-      author: true,
-    },
-  });
-
-  return post;
-}
-
-export async function getUserPosts() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    throw new Error("User is not registered.");
-  }
-
-  const posts = await prisma.post.findMany({
-    include: {
-      author: true,
-    },
-    where: {
-      authorId: user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  return posts;
+export async function getPosts(options = {}) {
+  return await PostService.getPosts(options);
 }
 
 export async function createPost(formData: FormData) {
-  const user = await getCurrentUser();
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
+  try {
+    const user = await getCurrentUser();
+    if (!user?.id) {
+      throw new Error("Unauthorized");
+    }
 
-  if (!user) {
-    throw new Error("User is not registered.");
+    const result = createPostSchema.safeParse({
+      title: formData.get("title"),
+      content: formData.get("content"),
+    });
+
+    if (!result.success) {
+      throw new Error(result.error.issues[0].message);
+    }
+
+    await PostService.createPost(result.data, user.id);
+
+    revalidatePath("/");
+    redirect("/");
+  } catch (error) {
+    console.error("Create post error:", error);
+    throw error;
   }
-
-  if (!title || title.trim().length === 0) {
-    throw new Error("Title is required.");
-  }
-
-  await prisma.post.create({
-    data: {
-      title,
-      content,
-      authorId: user.id,
-    },
-  });
-
-  revalidatePath("/");
-  redirect("/");
 }
 
 export async function updatePost(formData: FormData) {
-  const postId = Number(formData.get("id"));
-  const data = {
-    title: formData.get("title") as string,
-    content: formData.get("content") as string,
-  };
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
 
-  await prisma.post.update({
-    where: {
-      id: postId,
-    },
-    data,
-  });
+    const postId = Number(formData.get("id"));
+    const post = await PostService.getPostById(postId);
+    if (!post || post.authorId !== user.id) {
+      throw new Error("Unauthorized");
+    }
 
-  revalidatePath(`/posts/${postId}`);
-  redirect(`/posts/${postId}`);
+    const result = updatePostSchema.safeParse({
+      title: formData.get("title"),
+      content: formData.get("content"),
+      published: formData.get("published") === "on",
+    });
+
+    if (!result.success) {
+      throw new Error(result.error.issues[0].message);
+    }
+
+    await PostService.updatePost(postId, result.data);
+
+    const redirectTo = formData.get("redirect_to") as string;
+    if (redirectTo) {
+      revalidatePath(redirectTo);
+      redirect(redirectTo);
+    }
+  } catch (error) {
+    console.error("Update post error:", error);
+    throw error;
+  }
 }
 
 export async function deletePost(formData: FormData) {
-  const postId = Number(formData.get("id"));
-  const redirectTo = formData.get("redirect_to") as string;
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
 
-  await prisma.post.delete({
-    where: {
-      id: postId,
-    },
-  });
+    const postId = Number(formData.get("id"));
+    const post = await PostService.getPostById(postId);
+    if (!post || post.authorId !== user.id) {
+      throw new Error("Unauthorized");
+    }
+    await PostService.deletePost(postId);
 
-  if (redirectTo) {
-    revalidatePath(redirectTo);
-    redirect(redirectTo);
+    const redirectTo = formData.get("redirect_to") as string;
+    if (redirectTo) {
+      revalidatePath(redirectTo);
+      redirect(redirectTo);
+    }
+  } catch (error) {
+    console.error("Delete post error:", error);
+    throw error;
   }
 }

@@ -2,7 +2,7 @@ import { EllipsisVertical, SquarePen, Trash } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { PostWithAuthor } from "@/types/post";
+import { PostWithAuthor } from "@/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ interface Props {
   redirectTo?: string;
 }
 
-function Post({ post, currentUserId, redirectTo }: Props) {
+async function Post({ post, currentUserId, redirectTo }: Props) {
   return (
     <Card className="gap-4">
       <CardHeader className="flex justify-between items-center gap-2">
@@ -52,7 +52,7 @@ function Post({ post, currentUserId, redirectTo }: Props) {
                 <DropdownMenuLabel>More</DropdownMenuLabel>
                 <DropdownMenuItem asChild>
                   <Link
-                    href={`/posts/${post.id}/edit`}
+                    href={`/posts/${post.id}/edit?from=${redirectTo}`}
                     className="cursor-pointer"
                   >
                     <SquarePen />

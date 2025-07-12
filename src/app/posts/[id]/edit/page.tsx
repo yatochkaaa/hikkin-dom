@@ -11,10 +11,13 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default async function PostEdit({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const from = (await searchParams)?.from ?? "/";
   const post = await getPost(Number(id));
 
   if (!post) {
@@ -27,7 +30,8 @@ export default async function PostEdit({
 
       <Separator />
 
-      <Input type="hidden" name="id" value={post.id} />
+      <input type="hidden" name="id" value={post.id} />
+      <input type="hidden" name="redirect_to" value={from} />
 
       <div className="flex flex-col space-y-4">
         <div>

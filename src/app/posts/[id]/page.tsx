@@ -1,6 +1,6 @@
 import { getPost } from "@/actions/post";
 import { getCurrentUser } from "@/actions/user";
-import { Post } from "@/components/shared/post";
+import { Post } from "@/components/custom/post";
 import { TypographyH1 } from "@/components/ui/typography";
 import { notFound } from "next/navigation";
 

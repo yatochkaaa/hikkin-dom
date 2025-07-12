@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Edit } from "lucide-react";
 import { redirect } from "next/navigation";
-import { getUserPosts } from "@/actions/post";
+import { getPosts } from "@/actions/post";
 import { getCurrentUser } from "@/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Post } from "@/components/shared/post";
+import { Post } from "@/components/custom/post";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function Profile() {
@@ -21,7 +21,11 @@ export default async function Profile() {
     redirect("/");
   }
 
-  const posts = await getUserPosts();
+  const posts = await getPosts({
+    where: {
+      authorId: user.id,
+    },
+  });
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
